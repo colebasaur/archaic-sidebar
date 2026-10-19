@@ -945,9 +945,20 @@ async function init(): Promise<void> {
   chrome.storage.onChanged.addListener(scheduleRender);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !document.querySelector('.menu')) clearSelection();
+    if (e.key.toLowerCase() === 'z' && (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+      const target = e.target as HTMLElement;
+      if (target.isContentEditable || target.closest('input, textarea')) return;
+      e.preventDefault();
+      void undoArchive();
+    }
   });
 
   await render();
+}
+
+async function undoArchive(): Promise<void> {
+  const [latest] = await getLocal('archive');
+  if (latest) await send({ type: 'restoreArchived', id: latest.id, windowId });
 }
 
 void init();

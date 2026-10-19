@@ -35,7 +35,8 @@ within a second (dev builds only). Reloading closes the side panel, so reopen it
   "Personal"). Each profile keeps its own; it's never exported.
 - **Color**: ◐ in the sidebar footer picks a preset or custom color.
 - **Archive**: unpinned tabs idle for 12h (configurable) are closed and kept for 30 days.
-  Tabs playing audio are skipped.
+  Tabs playing audio are skipped. With the sidebar focused, Ctrl+Z (or Cmd+Z) reopens the most
+  recently archived tab; press again to keep going.
 - **Launcher**: the "Open launcher" shortcut (assign it at `chrome://extensions/shortcuts`)
   floats a search box over the page you're on; with nothing typed it lists recent tabs and pages.
   Ctrl+N/P (or arrows) moves the selection. Cmd+T and "+ New Tab" open Chrome's New Tab page.
