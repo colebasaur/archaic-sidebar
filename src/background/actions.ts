@@ -84,7 +84,7 @@ export async function renameNode(id: string, title: string): Promise<void> {
   const trimmed = title.trim();
   if (node.kind === 'folder') {
     if (trimmed) node.title = trimmed;
-  } else if (trimmed && trimmed !== node.title) {
+  } else if (trimmed) {
     node.customTitle = trimmed;
   } else {
     delete node.customTitle;
@@ -108,11 +108,11 @@ export async function renameTab(tabId: number, title: string): Promise<void> {
     await renameNode(entryId, title);
     return;
   }
-  const [meta, tab] = await Promise.all([getSession('tabMeta'), chrome.tabs.get(tabId)]);
+  const meta = await getSession('tabMeta');
   const now = Date.now();
   const current = meta[tabId] ?? { createdAt: now, lastActiveAt: now };
   const trimmed = title.trim();
-  if (trimmed && trimmed !== tab.title) current.customTitle = trimmed;
+  if (trimmed) current.customTitle = trimmed;
   else delete current.customTitle;
   meta[tabId] = current;
   await setSession('tabMeta', meta);
