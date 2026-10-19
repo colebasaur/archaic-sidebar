@@ -139,8 +139,8 @@ function entryTab(entry: Entry, s: Snapshot): chrome.tabs.Tab | undefined {
   return id === undefined ? undefined : s.tabsById.get(id);
 }
 
-function entryTitle(entry: Entry, s: Snapshot): string {
-  return entry.customTitle || entryTab(entry, s)?.title || entry.title;
+function entryTitle(entry: Entry): string {
+  return entry.customTitle || entry.title;
 }
 
 function isDrifted(entry: Entry, tab: chrome.tabs.Tab | undefined): boolean {
@@ -411,7 +411,7 @@ function menuOn(el: HTMLElement, items: () => MenuItem[]): void {
 
 function favoriteTile(entry: Entry, s: Snapshot): HTMLElement {
   const tab = entryTab(entry, s);
-  const title = entryTitle(entry, s);
+  const title = entryTitle(entry);
   const tile = h(
     'button',
     {
@@ -465,7 +465,7 @@ function entryRow(entry: Entry, parentId: string | undefined, s: Snapshot): HTML
   const tab = entryTab(entry, s);
   const active = tab?.active && tab.windowId === windowId;
   const drifted = isDrifted(entry, tab);
-  const titleEl = h('span', { class: 'title' }, entryTitle(entry, s));
+  const titleEl = h('span', { class: 'title' }, entryTitle(entry));
   const row = h(
     'div',
     {
