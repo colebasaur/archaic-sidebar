@@ -72,13 +72,13 @@ async function handle(command: string, tab: chrome.tabs.Tab): Promise<void> {
     case 'open-launcher':
       return openLauncherOverlay(tab);
     case 'copy-url':
-      return copyText(tab.url ?? '');
+      return copyText(tab.url ?? '', 'URL', tabId);
     case 'copy-clean-url':
-      return copyText(cleanUrl(tab.url ?? ''));
+      return copyText(cleanUrl(tab.url ?? ''), 'clean URL', tabId);
     case 'copy-title':
-      return copyText(await displayTitle(tab));
+      return copyText(await displayTitle(tab), 'title', tabId);
     case 'copy-markdown':
-      return copyText(markdownLink(await displayTitle(tab), tab.url ?? ''));
+      return copyText(markdownLink(await displayTitle(tab), tab.url ?? ''), 'Markdown link', tabId);
     case 'duplicate-tab':
       if (tabId !== undefined) await chrome.tabs.duplicate(tabId);
       return;
