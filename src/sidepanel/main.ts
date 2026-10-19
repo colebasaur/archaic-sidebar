@@ -482,7 +482,9 @@ function entryRow(entry: Entry, parentId: string | undefined, s: Snapshot): HTML
       { class: drifted ? 'actions always' : 'actions' },
       drifted &&
         closeButton('Back to pinned URL', '↺', () => void send({ type: 'resetEntry', id: entry.id })),
-      tab && closeButton('Close tab (keeps pin)', '−', () => void send({ type: 'closeEntryTab', id: entry.id })),
+      tab
+        ? closeButton('Close tab (keeps pin)', '−', () => void send({ type: 'closeEntryTab', id: entry.id }))
+        : closeButton('Unpin', '×', () => void send({ type: 'unpinNode', id: entry.id })),
     ),
   );
   selectable(row, { kind: 'node', id: entry.id });
