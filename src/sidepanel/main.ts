@@ -949,16 +949,11 @@ async function init(): Promise<void> {
       const target = e.target as HTMLElement;
       if (target.isContentEditable || target.closest('input, textarea')) return;
       e.preventDefault();
-      void undoArchive();
+      void send({ type: 'undoArchive', windowId });
     }
   });
 
   await render();
-}
-
-async function undoArchive(): Promise<void> {
-  const [latest] = await getLocal('archive');
-  if (latest) await send({ type: 'restoreArchived', id: latest.id, windowId });
 }
 
 void init();

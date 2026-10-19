@@ -8,8 +8,8 @@ import {
   openEntry,
   pinTab,
   resetEntry,
-  restoreArchived,
   setFolderCollapsed,
+  undoArchive,
   unpinNode,
 } from './actions';
 import { copyText } from './clipboard';
@@ -104,11 +104,8 @@ async function handle(command: string, tab: chrome.tabs.Tab): Promise<void> {
         if (entryId) await closeEntryTab(entryId);
         else await archiveTabs([tab]);
         return;
-      case 'reopen-archived': {
-        const [latest] = await getLocal('archive');
-        if (latest) await restoreArchived(latest.id, tab.windowId);
-        return;
-      }
+      case 'reopen-archived':
+        return undoArchive(tab.windowId);
       case 'rename-tab':
         await setSession('pendingRenameTabId', tabId);
         return;

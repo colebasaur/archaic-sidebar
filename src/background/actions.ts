@@ -249,7 +249,11 @@ export async function archiveTabs(tabs: chrome.tabs.Tab[]): Promise<void> {
     });
   if (added.length === 0) return;
   const addedUrls = new Set(added.map((a) => a.url));
-  const next = [...added, ...archive.filter((a) => !addedUrls.has(a.url))].slice(0, MAX_ARCHIVE);
+  // Newest first, so the last tab archived sits on top of the undo stack.
+  const next = [...added.reverse(), ...archive.filter((a) => !addedUrls.has(a.url))].slice(
+    0,
+    MAX_ARCHIVE,
+  );
   await setLocal('archive', next);
 }
 
@@ -274,6 +278,11 @@ export async function restoreArchived(id: string, windowId: number): Promise<voi
   if (!item) return;
   const tab = await chrome.tabs.create({ url: item.url, windowId, active: true });
   if (tab.id !== undefined && item.customTitle) await setTabCustomTitle(tab.id, item.customTitle);
+}
+
+export async function undoArchive(windowId: number): Promise<void> {
+  const [latest] = await getLocal('archive');
+  if (latest) await restoreArchived(latest.id, windowId);
 }
 
 export async function deleteArchived(id: string): Promise<void> {

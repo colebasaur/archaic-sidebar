@@ -38,6 +38,8 @@ function dispatch(msg: Message): Promise<void> {
       return actions.toggleFolder(msg.id);
     case 'restoreArchived':
       return actions.restoreArchived(msg.id, msg.windowId);
+    case 'undoArchive':
+      return actions.undoArchive(msg.windowId);
     case 'deleteArchived':
       return actions.deleteArchived(msg.id);
     case 'clearPendingRename':

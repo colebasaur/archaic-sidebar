@@ -97,6 +97,7 @@ export type Message =
   | { type: 'setFolderIcon'; id: string; icon?: string }
   | { type: 'toggleFolder'; id: string }
   | { type: 'restoreArchived'; id: string; windowId: number }
+  | { type: 'undoArchive'; windowId: number }
   | { type: 'deleteArchived'; id: string }
   | { type: 'clearPendingRename' }
   | { type: 'launch'; target: LauncherTarget; mode: LauncherMode; hostTabId?: number }
