@@ -12,6 +12,7 @@
     "scripting",
     "activeTab",
     "offscreen",
+    "clipboardWrite",
     "bookmarks",
     "history",
     "search",
