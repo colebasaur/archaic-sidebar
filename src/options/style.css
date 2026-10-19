@@ -1,0 +1,117 @@
+body {
+  font-size: 14px;
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 16px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0 0 24px;
+}
+
+h2 {
+  font-size: 15px;
+  margin: 0 0 12px;
+}
+
+section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type='number'] {
+  width: 70px;
+  font: inherit;
+  color: inherit;
+  padding: 4px 6px;
+  margin: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-strong);
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+button,
+.button {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.status {
+  color: var(--muted);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+td:last-child {
+  text-align: right;
+}
+
+kbd {
+  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+
+.unset {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 12px;
+}
+
+.sections label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}

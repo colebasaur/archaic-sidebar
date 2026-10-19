@@ -1,0 +1,103 @@
+:root {
+  color-scheme: light dark;
+  --bg: #e9e4f2;
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-strong: #ffffff;
+  --hover: rgba(255, 255, 255, 0.45);
+  --active: #ffffff;
+  --text: #1f1b24;
+  --muted: #6c6577;
+  --border: rgba(31, 27, 36, 0.1);
+  --accent: #7b5cd6;
+  --danger: #b3261e;
+  --shadow: 0 1px 2px rgba(31, 27, 36, 0.08), 0 4px 16px rgba(31, 27, 36, 0.08);
+  --radius: 10px;
+  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1a24;
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-strong: #2a2633;
+    --hover: rgba(255, 255, 255, 0.06);
+    --active: rgba(255, 255, 255, 0.13);
+    --text: #ece8f3;
+    --muted: #9b94a8;
+    --border: rgba(255, 255, 255, 0.09);
+    --accent: #a48cf0;
+    --danger: #f2a49e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.35 var(--font);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.favicon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: 3px;
+}
+
+.favicon.missing {
+  visibility: hidden;
+}
+
+.inline-edit {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--surface-strong);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  padding: 1px 4px;
+  outline: none;
+}
+
+.menu {
+  position: fixed;
+  z-index: 100;
+  min-width: 180px;
+  padding: 4px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.menu-item:hover {
+  background: var(--hover);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.menu-item.danger {
+  color: var(--danger);
+}

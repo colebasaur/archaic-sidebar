@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Archaic Sidebar Settings</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Archaic Sidebar</h1>
+
+      <section>
+        <h2>Auto-archive</h2>
+        <form id="settings">
+          <label>
+            Archive unpinned tabs after
+            <input id="archiveAfterHours" type="number" min="1" max="720" step="1" required />
+            hours idle
+          </label>
+          <label>
+            Keep archived tabs for
+            <input id="archiveRetentionDays" type="number" min="1" max="365" step="1" required />
+            days
+          </label>
+          <div class="actions">
+            <button type="submit" class="primary">Save</button>
+            <span id="saved" class="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Keyboard shortcuts</h2>
+        <p class="muted">
+          Shortcuts are set in Chrome, per profile. The four vim keys are bound automatically when the
+          extension is installed; assign the rest on Chrome's shortcuts page.
+        </p>
+        <div class="actions">
+          <button id="editShortcuts" type="button" class="primary">
+            Open chrome://extensions/shortcuts
+          </button>
+        </div>
+        <table id="commands"></table>
+      </section>
+
+      <section>
+        <h2>Backup</h2>
+        <p class="muted">
+          Choose what to export. Importing only replaces what the file contains and leaves
+          everything else in that profile alone.
+        </p>
+        <div id="sections" class="sections"></div>
+        <div class="actions">
+          <button id="export" type="button">Export JSON</button>
+          <label class="button">
+            Import JSON
+            <input id="import" type="file" accept="application/json,.json" hidden />
+          </label>
+          <span id="backupStatus" class="status" aria-live="polite"></span>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

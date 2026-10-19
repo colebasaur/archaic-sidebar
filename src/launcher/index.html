@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New Tab</title>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="backdrop" id="backdrop">
+      <div class="panel" role="dialog" aria-label="Launcher">
+        <input
+          id="query"
+          class="query"
+          type="text"
+          placeholder="Search tabs, pins, history — or type a URL"
+          autocomplete="off"
+          spellcheck="false"
+          autofocus
+        />
+        <ul id="results" class="results" role="listbox"></ul>
+      </div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
