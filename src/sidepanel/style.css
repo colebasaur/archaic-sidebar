@@ -34,6 +34,10 @@ body::before {
   padding: 0 8px;
 }
 
+.scroll > * {
+  flex-shrink: 0;
+}
+
 /* Profile label */
 .profile {
   display: flex;
