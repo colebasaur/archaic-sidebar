@@ -62,7 +62,7 @@ async function saveIcon(entryId: string, dataUrl: string): Promise<void> {
   });
 }
 
-/** A pinned tab showed an icon: keep it if the tab is still on the pin's site. */
+/** A pinned tab showed an icon: keep it while the pin has none yet, or the tab is on the pinned URL itself. */
 export async function captureTabIcon(tabId: number, iconUrl: string): Promise<void> {
   const [layout, bindings, tab] = await Promise.all([
     getLocal('layout'),
@@ -72,7 +72,7 @@ export async function captureTabIcon(tabId: number, iconUrl: string): Promise<vo
   const entryId = Object.keys(bindings).find((id) => bindings[id] === tabId);
   const entry = entryId ? allEntries(layout).find((e) => e.id === entryId) : undefined;
   if (!entry || !sameSite(tab?.url, entry.url)) return;
-  if (entry.favIconUrl?.startsWith('data:') && entry.favIconUrl === iconUrl) return;
+  if (entry.favIconUrl?.startsWith('data:') && (entry.favIconUrl === iconUrl || tab?.url !== entry.url)) return;
   const data = await toDataUrl(iconUrl);
   if (data) await saveIcon(entry.id, data);
 }

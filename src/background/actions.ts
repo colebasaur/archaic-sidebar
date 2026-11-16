@@ -13,6 +13,7 @@ import type {
 import { isLauncherUrl, isStorableIcon } from '../lib/url';
 import { parseImport } from '../lib/backup';
 import { FOLDER_ICONS } from '../lib/folderIcons';
+import { todayTabs } from '../lib/order';
 
 const MAX_ARCHIVE = 2000;
 
@@ -118,8 +119,29 @@ export async function renameTab(tabId: number, title: string): Promise<void> {
   await setSession('tabMeta', meta);
 }
 
+/** Places an unpinned tab before another in Today (or last) by renumbering createdAt, which is all Today sorts by. */
+export async function moveTodayTab(tabId: number, beforeTabId?: number): Promise<void> {
+  if (tabId === beforeTabId) return;
+  const [tab, bindings, meta] = await Promise.all([
+    chrome.tabs.get(tabId),
+    getSession('bindings'),
+    getSession('tabMeta'),
+  ]);
+  if (Object.values(bindings).includes(tabId)) return;
+  const tabs = todayTabs(await chrome.tabs.query({ windowId: tab.windowId }), bindings, meta);
+  const order = tabs.map((t) => t.id as number).filter((id) => id !== tabId);
+  const at = beforeTabId === undefined ? -1 : order.indexOf(beforeTabId);
+  order.splice(at < 0 ? order.length : at, 0, tabId);
+  const now = Date.now();
+  const top = Math.max(...order.map((id) => meta[id]?.createdAt ?? 0));
+  order.forEach((id, i) => {
+    meta[id] = { ...(meta[id] ?? { lastActiveAt: now }), createdAt: top - i };
+  });
+  await setSession('tabMeta', meta);
+}
+
 export async function pinTab(tabId: number, target: DropTarget): Promise<void> {
-  if (target.zone === 'today') return;
+  if (target.zone === 'today') return moveTodayTab(tabId, target.beforeTabId);
   const [layout, bindings, meta, tab] = await Promise.all([
     getLocal('layout'),
     getSession('bindings'),
@@ -163,7 +185,10 @@ export async function moveNode(id: string, target: DropTarget): Promise<void> {
   if (target.zone === 'today') {
     // Unpinning by drag only makes sense for an open tab; anything else would silently delete pins.
     const [layout, bindings] = await Promise.all([getLocal('layout'), getSession('bindings')]);
-    if (findAnywhere(layout, id)?.kind === 'entry' && bindings[id] !== undefined) await unpinNode(id);
+    const tabId = bindings[id];
+    if (findAnywhere(layout, id)?.kind !== 'entry' || tabId === undefined) return;
+    await unpinNode(id);
+    if (target.beforeTabId !== undefined) await moveTodayTab(tabId, target.beforeTabId);
     return;
   }
   const layout = await getLocal('layout');

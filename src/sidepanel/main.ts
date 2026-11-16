@@ -121,8 +121,7 @@ function tabIcon(tab: chrome.tabs.Tab): HTMLImageElement {
   return known ? favicon(known, pageIcon) : favicon(pageIcon);
 }
 
-function entryIcon(entry: Entry, tab: chrome.tabs.Tab | undefined): HTMLImageElement {
-  if (tab) return tabIcon(tab);
+function entryIcon(entry: Entry): HTMLImageElement {
   const pageIcon = faviconUrl(entry.url);
   return entry.favIconUrl ? favicon(entry.favIconUrl, pageIcon) : favicon(pageIcon);
 }
@@ -266,7 +265,7 @@ const DOUBLE_CLICK_MS = 250;
  * a rename started by the same double-click. So closed pins wait to see if a second click
  * follows before opening; open ones switch immediately.
  */
-function clickOrRename(el: HTMLElement, entry: Entry, isOpen: boolean, rename: () => void): void {
+function clickOrDouble(el: HTMLElement, entry: Entry, isOpen: boolean, onDouble: () => void): void {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const open = () => void send({ type: 'openEntry', id: entry.id, windowId });
   el.addEventListener('click', (e) => {
@@ -276,7 +275,7 @@ function clickOrRename(el: HTMLElement, entry: Entry, isOpen: boolean, rename: (
   });
   el.addEventListener('dblclick', () => {
     clearTimeout(timer);
-    rename();
+    onDouble();
   });
 }
 
@@ -422,10 +421,12 @@ function favoriteTile(entry: Entry, s: Snapshot): HTMLElement {
       'data-node-id': entry.id,
       'data-tab-id': tab?.id,
     },
-    entryIcon(entry, tab),
+    entryIcon(entry),
   );
   selectable(tile, { kind: 'node', id: entry.id });
-  clickOrRename(tile, entry, !!tab, () => renameFavorite(tile));
+  clickOrDouble(tile, entry, !!tab, () =>
+    void send({ type: tab ? 'resetEntry' : 'openEntry', id: entry.id, windowId }),
+  );
   draggable(tile, { kind: 'node', id: entry.id });
   dropZone(tile, () => ({ target: { zone: 'favorites', beforeId: entry.id }, mark: 'drop-before' }));
   menuOn(tile, () => [
@@ -474,7 +475,7 @@ function entryRow(entry: Entry, parentId: string | undefined, s: Snapshot): HTML
       'data-node-id': entry.id,
       'data-tab-id': tab?.id,
     },
-    entryIcon(entry, tab),
+    entryIcon(entry),
     titleEl,
     tab?.audible ? h('span', { class: 'audible', title: 'Playing audio' }, '♪') : null,
     h(
@@ -488,7 +489,7 @@ function entryRow(entry: Entry, parentId: string | undefined, s: Snapshot): HTML
     ),
   );
   selectable(row, { kind: 'node', id: entry.id });
-  clickOrRename(row, entry, !!tab, () => renameRow(row));
+  clickOrDouble(row, entry, !!tab, () => renameRow(row));
   draggable(row, { kind: 'node', id: entry.id });
   dropZone(row, () => ({ target: { zone: 'pinned', parentId, beforeId: entry.id }, mark: 'drop-before' }));
   menuOn(row, () => [
@@ -563,6 +564,12 @@ function todayRow(tab: chrome.tabs.Tab, s: Snapshot): HTMLElement {
   );
   selectable(row, { kind: 'tab', tabId });
   draggable(row, { kind: 'tab', tabId });
+  dropZone(row, (_e, source) =>
+    (source.kind === 'tab' && source.tabId !== tabId) ||
+    (source.kind === 'node' && s.bindings[source.id] !== undefined)
+      ? { target: { zone: 'today', beforeTabId: tabId }, mark: 'drop-before' }
+      : undefined,
+  );
   menuOn(row, () => [
     { label: 'Rename', run: () => renameRow(row) },
     ...(s.tabMeta[tabId]?.customTitle
@@ -638,7 +645,7 @@ function renderMain(s: Snapshot): HTMLElement[] {
     ...today.map((t) => todayRow(t, s)),
   );
   dropZone(todaySection, (_e, source) =>
-    source.kind === 'node' && s.bindings[source.id] !== undefined
+    source.kind === 'tab' || s.bindings[source.id] !== undefined
       ? { target: { zone: 'today' }, mark: 'drop-into' }
       : undefined,
   );

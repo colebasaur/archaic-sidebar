@@ -65,7 +65,7 @@ export interface SessionState {
 export type DropTarget =
   | { zone: 'favorites'; beforeId?: string }
   | { zone: 'pinned'; parentId?: string; beforeId?: string }
-  | { zone: 'today' };
+  | { zone: 'today'; beforeTabId?: number };
 
 export type DragSource = { kind: 'node'; id: string } | { kind: 'tab'; tabId: number };
 
